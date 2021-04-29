@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+	layout:decorator="layout">
+<head>
+<title>List Patients</title>
+</head>
+<body>
+
+	<div layout:fragment="zika">
+
+
+
+		<div class="container mt-5">
+
+			<div class="card">
+				<div class="card-header">
+					<h1>La Liste Des Patients</h1>
+				</div>
+				<div class="card-body">
+					<form th:action="@{patients}" method="get">
+						<div class="form-group">
+							<label>nom :</label> <input type="text" name="keyword"
+								th:value="${keyword}" />
+							<button class="btn btn-success"
+								th:href="@{patients(keyword=${keyword} , size=${size})}">Chercher</button>
+						</div>
+					</form>
+					<table class="table">
+						<tr>
+							<th>id</th>
+							<th>nom</th>
+							<th>date de naissance</th>
+							<th>score</th>
+							<th>malade</th>
+						</tr>
+						<tr th:each="p:${patients}">
+							<td th:text="${p.id}"></td>
+							<td th:text="${p.nom}"></td>
+							<td th:text="${p.dateNaissance}"></td>
+							<td th:text="${p.score}"></td>
+							<td th:text="${p.malade}"></td>
+							<th sec:authorize="hasRole('ROLE_ADMIN')"><a
+								onclick="return confirm('Etes vous sure de vouloir suprimer?')"
+								class="btn btn-danger"
+								th:href="@{deletePatient( id=${p.id} , page=${currentPage} , keyword=${keyword} , size=${size} )}">Delete</a></th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')"><a class="btn btn-success"
+								th:href="@{editPatient(id=${p.id}) }">Update</a></th>
+						</tr>
+					</table>
+
+					<ul class="nav nav-pills">
+						<li th:each="page,status:${page}"><a
+							th:class="${status.index==currentPage?'btn btn-primary':'btn'}"
+							th:href="@{patients(page=${status.index} , keyword=${keyword} , size=${size})}"
+							th:text="${status.index}"></a></li>
+					</ul>
+
+				</div>
+			</div>
+
+		</div>
+
+
+
+	</div>
+
+
+</body>
+</html>
